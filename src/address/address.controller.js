@@ -1,0 +1,128 @@
+const { getLocation } = require("../location/location.repository");
+const {
+  getAddress,
+  updateAddress,
+  deleteAddress,
+  createAddress,
+} = require("./address.service");
+
+const router = require("express").Router();
+
+router.get("/", async (req, res, next) => {
+  try {
+    const address = await getAddress({ customer_id: req.user.id }); // Assuming customer_id is 1 for testing purposes
+    res.status(200).json(address);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/", async (req, res, next) => {
+  try {
+    const {
+      destination_id,
+      label,
+      recipient_name,
+      recipient_phone,
+      country,
+      province,
+      regency,
+      district,
+      village,
+      postal_code,
+      street,
+      details,
+      is_primary,
+    } = req.body;
+    const customer_id = req.user.id;
+    console.log(req.body);
+    const location = await getLocation({
+      country,
+      province,
+      regency,
+      district,
+      village,
+      postal_code,
+    });
+
+    if (is_primary)
+      await updateAddress({ is_primary: 1, customer_id }, { is_primary: 0 });
+    const newAddress = await createAddress({
+      customer_id,
+      destination_id,
+      label,
+      recipient_name,
+      recipient_phone,
+      location_id: location.id,
+      street,
+      details,
+      is_primary,
+    });
+    res.status(201).json(newAddress);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const {
+      destination_id,
+      label,
+      recipient_name,
+      recipient_phone,
+      country,
+      province,
+      regency,
+      district,
+      village,
+      postal_code,
+      street,
+      details,
+      is_primary,
+    } = req.body;
+    const location = await getLocation({
+      country,
+      province,
+      regency,
+      district,
+      village,
+      postal_code,
+    });
+
+    if (is_primary)
+      await updateAddress(
+        { is_primary: 1, customer_id: req.user.id },
+        { is_primary: 0 }
+      );
+    const updatedAddress = await updateAddress(
+      { address_id: id },
+      {
+        destination_id,
+        label,
+        recipient_name,
+        recipient_phone,
+        location_id: location.id,
+        street,
+        details,
+        is_primary,
+      }
+    );
+    res.status(200).json(updatedAddress);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedAddress = await deleteAddress(id);
+    res.status(200).json(deletedAddress);
+  } catch (error) {
+    next(error);
+  }
+});
+
+module.exports = router;
