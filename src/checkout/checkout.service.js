@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const { CustomError } = require("../../utils/CustomError");
-const {  getUserAddress } = require("../address/address.service");
+const { getUserAddress } = require("../address/address.service");
 const {
   insertCheckout,
   destroyCheckout,
@@ -83,18 +83,18 @@ const getIncompleteCheckout = async ({
     transaction_token: null,
   });
 
-  if (!existingCheckout) { 
+  if (!existingCheckout) {
     const address = await getUserAddress({ customer_id });
     if (!address) {
       throw new CustomError("complete your address first ", 400);
     }
-    
+
     existingCheckout = await createCheckout({
       address_id: address?.address_id ?? null,
       customer_id,
       checkout_date: isCheckout ? new Date() : null,
     });
-  } 
+  }
   return existingCheckout;
 };
 
@@ -109,9 +109,9 @@ const checkoutOrder = async (body, customer_id) => {
       const { craft_variant_id, id_souvenir_place } = item;
       const currenCraftItem = await findDetailCraft(
         { craft_variant_id, id_souvenir_place },
-        []
+        [],
       );
-      console.log(currenCraftItem)
+      console.log(currenCraftItem);
       if (!currenCraftItem?.stock || currenCraftItem.stock === 0) {
         throw new CustomError("Out of Stocks", 400);
       }
@@ -127,7 +127,7 @@ const checkoutOrder = async (body, customer_id) => {
           },
           {
             checkout_id: existingCheckout.id,
-          }
+          },
         );
         return updated;
       }
@@ -137,10 +137,11 @@ const checkoutOrder = async (body, customer_id) => {
           id_souvenir_place: item.id_souvenir_place,
           craft_variant_id: item.craft_variant_id,
           jumlah: item.jumlah,
+          unit_price: item.unit_price,
         },
       ]);
-    })
-  ); 
+    }),
+  );
   return newItems;
 };
 
@@ -166,7 +167,7 @@ const updateCheckoutStatus = async ({
           { shipping_id },
           {
             status: status || 6,
-          }
+          },
         );
       });
     } else {
@@ -183,9 +184,9 @@ const updateCheckoutStatus = async ({
           }
           return updateShipping(
             { shipping_id },
-            { status, ...(updatedBody ?? {}) }
+            { status, ...(updatedBody ?? {}) },
           );
-        })
+        }),
       );
 
       checkout = await updateCheckout(
@@ -193,7 +194,7 @@ const updateCheckoutStatus = async ({
         {
           payment: payment_type ?? null,
           payment_date: settlement_time ?? null,
-        }
+        },
       );
     }
   }

@@ -122,7 +122,7 @@ router.patch("/:id", async (req, res, next) => {
           {
             shipping_id: newShipping.shipping_id,
             note: items[detailIndex + prevIndex].note,
-          }
+          },
         );
       }
     }
@@ -134,17 +134,17 @@ router.patch("/:id", async (req, res, next) => {
             craft_variant_id: item.craft_variant_id,
             id_souvenir_place: item.id_souvenir_place,
           },
-          []
+          [],
         );
         const stock = currenCraftItem.stock;
         const newStock = stock - item.jumlah < 0 ? 0 : stock - item.jumlah;
         currenCraftItem.stock = newStock;
         await currenCraftItem.save();
-      })
+      }),
     );
     await updateCheckoutStatus({
       id: id,
-      payment_type: 'bank_transfer',
+      payment_type: "bank_transfer",
       settlement_time: new Date(),
       shippings: shippingsResult,
       status: 2,
@@ -175,7 +175,7 @@ router.patch(
               { shipping_id },
               {
                 status: status || 6,
-              }
+              },
             );
           });
         }
@@ -194,9 +194,9 @@ router.patch(
               }
               return updateShipping(
                 { shipping_id },
-                { status, ...(updatedBody ?? {}) }
+                { status, ...(updatedBody ?? {}) },
               );
-            })
+            }),
           );
         }
 
@@ -205,14 +205,14 @@ router.patch(
           {
             payment: paymentStatus?.payment_type ?? null,
             payment_date: paymentStatus?.settlement_time ?? null,
-          }
+          },
         );
       }
       res.status(200).json(id);
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.get("/history", async (req, res, next) => {
@@ -243,7 +243,7 @@ router.get("/transactions", async (req, res, next) => {
             id_souvenir_place,
           };
           return getSouvenirTransaction(key);
-        })
+        }),
       );
       checkouts = checkouts.flat();
     }
@@ -272,12 +272,12 @@ router.patch(
       if (seller_response || seller_response == "") {
         updatedItem = await updateItemsCheckout(
           { checkout_id, craft_variant_id, id_souvenir_place },
-          { seller_response, response_date: new Date() }
+          { seller_response, response_date: new Date() },
         );
       } else {
         updatedItem = await updateItemsCheckout(
           { checkout_id, craft_variant_id, id_souvenir_place },
-          { review_text, review_rating, review_date: new Date() }
+          { review_text, review_rating, review_date: new Date() },
         );
 
         const images = req.files
@@ -314,7 +314,7 @@ router.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = router;

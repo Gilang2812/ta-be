@@ -32,6 +32,11 @@ const ItemCheckout = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    unit_price:{
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+
+    },
     note: {
       type: DataTypes.STRING(100),
       allowNull: true,

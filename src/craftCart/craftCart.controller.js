@@ -31,13 +31,14 @@ router.get("/:craft_variant_id", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  try { 
-    const { craft_variant_id, id_souvenir_place, jumlah } = req.body;
+  try {
+    const { craft_variant_id, id_souvenir_place, jumlah, unit_price } = req.body;
     const craftCart = await createCraftCart({
       customer_id: req.user.id,
       craft_variant_id,
       id_souvenir_place,
       jumlah,
+      unit_price,
     });
     res.status(201).json(craftCart);
   } catch (error) {
@@ -56,8 +57,9 @@ router.post("/bulk", async (req, res, next) => {
           id_souvenir_place: item.id_souvenir_place,
           craft_variant_id: item.craft_variant_id,
           jumlah: item.jumlah,
-        })
-      )
+          unit_price: item.unit_price,
+        }),
+      ),
     );
 
     res.status(201).json(craftCarts);
@@ -80,13 +82,13 @@ router.patch(
         },
         {
           jumlah,
-        }
+        },
       );
       res.status(200).json(craftCart);
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.delete(
@@ -102,7 +104,7 @@ router.delete(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = router;
