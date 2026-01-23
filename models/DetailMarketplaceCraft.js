@@ -41,7 +41,7 @@ const DetailMarketplaceCraft = sequlize.define(
     },
   },
   {
-    tableName: "detail_marketplace_craft",
+    tableName: "detail_store_craft",
     timestamps: false,
   }
 );
