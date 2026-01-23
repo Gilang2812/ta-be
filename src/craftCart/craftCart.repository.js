@@ -11,7 +11,7 @@ const {
 } = require("../detailMarketplaceCraft/detailCraft.utils");
 
 const findCraftCarts = (condition) => {
-  const include = buildIncludeModels(["craft"]);
+  const include = buildIncludeModels(["craft" ,"souvenirPlace"]);
   return ItemCheckout.findAll({
     attributes: [
       "checkout_id",
@@ -32,15 +32,15 @@ const findCraftCarts = (condition) => {
       {
         model: DetailMarketplaceCraft,
         as: "detailCraft",
-        where:and(
+        where: and(
           where(
             col("ItemCheckout.craft_variant_id"),
-            col("detailCraft.craft_variant_id")
+            col("detailCraft.craft_variant_id"),
           ),
           where(
             col("ItemCheckout.id_souvenir_place"),
-            col("detailCraft.id_souvenir_place")
-          )
+            col("detailCraft.id_souvenir_place"),
+          ),
         ),
         include: [
           ...include,
@@ -51,12 +51,12 @@ const findCraftCarts = (condition) => {
             where: and(
               where(
                 col("detailCraft->craftGalleries.craft_variant_id"),
-                col("detailCraft.craft_variant_id")
+                col("detailCraft.craft_variant_id"),
               ),
               where(
                 col("detailCraft->craftGalleries.id_souvenir_place"),
-                col("detailCraft.id_souvenir_place")
-              )
+                col("detailCraft.id_souvenir_place"),
+              ),
             ),
             required: false,
           },
